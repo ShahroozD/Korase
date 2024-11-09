@@ -47,7 +47,7 @@ project-root/
 
 2. **Start the development server**:
     ```bash
-    npm start
+    npm run dev
     ```
 
 3. **Access your blog**: Open [http://localhost:5173](http://localhost:5173) in your browser.
@@ -112,7 +112,7 @@ project-root/
 
 2. **اجرای سرور توسعه**:
     ```bash
-    npm start
+    npm run dev
     ```
 
 3. **دسترسی به وبلاگ**: مرورگر خود را باز کنید و به [http://localhost:5173](http://localhost:5173) بروید.
