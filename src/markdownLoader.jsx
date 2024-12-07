@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { redirect, useParams } from 'react-router-dom';
-import { configure, markdownToOutput } from 'shahmark';
+import { configure, markdownToOutput } from 'shahneshan';
 // import ReactMarkdown from 'react-markdown';
 
 const MarkdownLoader = ({ template: Template }) => {

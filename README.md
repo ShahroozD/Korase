@@ -20,6 +20,7 @@ project-root/
 ├── docs/                  # Folder with Markdown files
 │   ├── README.md          # Main page content
 │   ├── guide.md           # Additional content page
+│   ├── _sidebar.md        # Sidebar links
 ├── src/
 │   ├── App.js             # Main application file
 │   ├── Sidebar.js         # Sidebar navigation component
@@ -35,8 +36,8 @@ project-root/
    - You can also add nested folders, like `docs/tutorials/intro.md`, which will be accessible at `/tutorials/intro`.
 
 2. **Configuring Sidebar**:
-   - In this simplified version, the sidebar navigation is manually managed in `Sidebar.js`. 
-   - To add a link for the new file, add a new entry to the array with the path and label.
+   - In this simplified version, the sidebar navigation is manually managed in `_sidebar.md`. 
+   - To add a link for the new file, add a new entry to the _sidebar markdown with the path and label.
 
 ### Installation
 
@@ -85,6 +86,7 @@ project-root/
 ├── docs/                   # پوشه‌ای برای فایل‌های Markdown
 │   ├── README.md           # محتوای صفحه اصلی
 │   ├── guide.md            # صفحه‌ی راهنما
+│   ├── _sidebar.md         # پیوندهای نوار کناری
 ├── src/
 │   ├── App.js              # فایل اصلی برنامه
 │   ├── Sidebar.js          # کامپوننت نوار کناری برای ناوبری
@@ -100,8 +102,8 @@ project-root/
    - همچنین می‌توانید پوشه‌های تودرتو اضافه کنید، مثل `docs/tutorials/intro.md` که در آدرس `/tutorials/intro` قابل دسترسی خواهد بود.
 
 2. **پیکربندی نوار کناری**:
-   - در این نسخه ساده، ناوبری نوار کناری به‌صورت دستی در `Sidebar.js` مدیریت می‌شود.
-   - برای اضافه کردن لینک جدید، یک ورودی جدید با مسیر و برچسب (label) اضافه کنید.
+   - در این نسخه ساده، ناوبری نوار کناری به‌صورت دستی در `_sidebar.md` مدیریت می‌شود.
+   - برای اضافه کردن لینک جدید، یک پیوند جدید با مسیر و برچسب (label) اضافه کنید.
 
 ### نصب
 
