@@ -5,6 +5,7 @@ import { configure, markdownToOutput } from 'shahmark';
 
 const MarkdownLoader = ({ template: Template }) => {
     const [content, setContent] = useState('');
+    const [sidebar, setSidebar] = useState('');
     const { path } = useParams();
     
     // Construct the Markdown file path
@@ -23,7 +24,7 @@ const MarkdownLoader = ({ template: Template }) => {
                 // markdownParser.configure({
                 //     customStyles: ``,
                 //     plugins: [] // Register plugins here
-                //   });
+                // });
                 
                 const htmlContent = markdownToOutput(markdown);
                 setContent(htmlContent);
@@ -31,8 +32,20 @@ const MarkdownLoader = ({ template: Template }) => {
             .catch((err) => setContent(`# Error: Could not load ${filePath}\n\n${err.message}`));
     }, [filePath]);
 
+    useEffect(() => {
+        // Load the Markdown file content dynamically
+        fetch(`/docs/_sidebar.md`)
+            .then((response) => {               
+                return response.text();
+            })
+            .then((markdown)=>{               
+                if(markdown) setSidebar(markdown);
+            })
+            .catch((err) =>{console.log("aaaaaaaa");});
+    }, []);
+
     return (
-        <Template>
+        <Template sidebar={sidebar}>
             <div dangerouslySetInnerHTML={{__html: content}} />
         </Template>
     );

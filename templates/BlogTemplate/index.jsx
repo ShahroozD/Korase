@@ -2,9 +2,9 @@ import React from 'react';
 import './styles.css';
 import Sidebar from './Sidebar';
 
-const DefaultTemplate = ({ children }) => (
+const DefaultTemplate = ({ children, sidebar }) => (
     <div className='blog-template'>
-        <Sidebar />
+        <Sidebar sidebar={sidebar} />
         <div className="markdown-container">
             <header>
                 <h1>My Markdown Blog</h1>

@@ -1,17 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const Sidebar = () => {
-    const [docsList, setDocsList] = useState([]);
+// Function to parse the input text
+function parseLinksToObjects(text) {
+    const regex = /\[([^\]]+)\]\(([^)]*)\)/g;
+    let matches;
+    const result = [];
 
-    // Simulate fetching the list of files (replace this with dynamic fetching if you have a backend)
-    useEffect(() => {
-        const docs = [
-            { path: '', label: 'Home' },
-            { path: 'PERSIAN', label: 'فارسی' },
-        ];
-        setDocsList(docs);
-    }, []);
+    while ((matches = regex.exec(text)) !== null) {
+        const label = matches[1];
+        const path = matches[2];
+        result.push({ path: path, label: label });
+    }
+
+    return result;
+}
+
+const Sidebar = (sidebar) => {
+
+    const docsList = useMemo(() => parseLinksToObjects(sidebar.sidebar || ""), [sidebar]);
 
     return (
         <div className="sidebar">
