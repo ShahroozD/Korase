@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { redirect, useParams } from 'react-router-dom';
-import { configure, markdownToOutput } from 'shahneshan';
+import { configure, markdownToOutput, applyAfterRender } from 'shahneshan';
 // import ReactMarkdown from 'react-markdown';
 
 const MarkdownLoader = ({ template: Template }) => {
@@ -43,6 +43,14 @@ const MarkdownLoader = ({ template: Template }) => {
             })
             .catch((err) =>{console.log("aaaaaaaa");});
     }, []);
+
+
+    // After content is updated, run the afterRender hook
+    useEffect(() => {
+        if (outputRef.current) {
+        applyAfterRender(outputRef.current);
+        }
+    }, [content]);
 
     return (
         <Template sidebar={sidebar}>
