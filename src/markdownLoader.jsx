@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { redirect, useParams } from 'react-router-dom';
-import { configure, markdownToOutput, applyAfterRender } from 'shahneshan';
+import { applyAfterRender, configure, markdownToOutput } from 'shahneshan';
 // import ReactMarkdown from 'react-markdown';
 
 const MarkdownLoader = ({ template: Template }) => {
     const [content, setContent] = useState('');
     const [sidebar, setSidebar] = useState('');
     const { path } = useParams();
+    const outputRef = useRef(null);
     
     // Construct the Markdown file path
     const filePath = path ? `/docs/${path}.md` : '/docs/README.md';
@@ -21,10 +22,10 @@ const MarkdownLoader = ({ template: Template }) => {
             })
             .then((markdown)=>{               
 
-                // markdownParser.configure({
-                //     customStyles: ``,
-                //     plugins: [] // Register plugins here
-                // });
+                configure({
+                    customStyles: ``,
+                    plugins: [] // Register plugins here
+                });
                 
                 const htmlContent = markdownToOutput(markdown);
                 setContent(htmlContent);
@@ -54,7 +55,7 @@ const MarkdownLoader = ({ template: Template }) => {
 
     return (
         <Template sidebar={sidebar}>
-            <div dangerouslySetInnerHTML={{__html: content}} />
+            <div ref={outputRef} dangerouslySetInnerHTML={{__html: content}} />
         </Template>
     );
 };

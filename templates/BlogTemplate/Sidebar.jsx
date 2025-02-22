@@ -1,5 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+
+const isNode = typeof window === 'undefined';
 
 // Function to parse the input text
 function parseLinksToObjects(text) {
@@ -8,17 +10,13 @@ function parseLinksToObjects(text) {
     const result = [];
 
     while ((matches = regex.exec(text)) !== null) {
-        const label = matches[1];
-        const path = matches[2];
-        result.push({ path: path, label: label });
+        result.push({ path: matches[2], label: matches[1] });
     }
-
     return result;
 }
 
-const Sidebar = (sidebar) => {
-
-    const docsList = useMemo(() => parseLinksToObjects(sidebar.sidebar || ""), [sidebar]);
+const Sidebar = ({ sidebar = "" }) => {
+    const docsList = useMemo(() => parseLinksToObjects(sidebar), [sidebar]);
 
     return (
         <div className="sidebar">
@@ -27,7 +25,11 @@ const Sidebar = (sidebar) => {
                 <ul>
                     {docsList.map((doc, index) => (
                         <li key={index}>
-                            <Link to={`/${doc.path}`}>{doc.label}</Link>
+                            {isNode ? (
+                                <a href={`/${doc.path}`}>{doc.label}</a>
+                            ) : (
+                                <Link to={`/${doc.path}`}>{doc.label}</Link>
+                            )}
                         </li>
                     ))}
                 </ul>
