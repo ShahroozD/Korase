@@ -10,7 +10,7 @@ const MarkdownLoader = ({ template: Template }) => {
     const outputRef = useRef(null);
     
     // Construct the Markdown file path
-    const filePath = location.pathname ? `/docs/${location.pathname}.md` : '/docs/README.md';
+    const filePath = (location.pathname && location.pathname != "/") ? `/docs/${location.pathname}.md` : '/docs/README.md';
     
 
     useEffect(() => {
