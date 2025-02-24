@@ -1,7 +1,10 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-})
+  ssr: {
+    noExternal: ['react', 'react-dom'], // Ensures these libraries are bundled correctly
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom'], // Pre-bundling for React
+  },
+});

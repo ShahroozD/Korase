@@ -1,12 +1,12 @@
 /* Blog Template Styles */
-.blog-template nav ul {
+.default-template nav ul {
   display: flex;
   gap: 15px;
   list-style-type: none;
   padding: 0;
 }
 
-.blog-template .content {
+.default-template .content {
   padding: 20px;
   background-color: #fff;
   margin: 20px auto;

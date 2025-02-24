@@ -36,7 +36,7 @@ const App = () => {
           element:<MarkdownLoader template={SelectedTemplate} />,
           children: [
             {
-                path: ":path",
+                path: "*",
                 element:<MarkdownLoader template={SelectedTemplate} />,
             },
           ]

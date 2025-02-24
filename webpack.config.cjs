@@ -1,4 +1,6 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './src/render.jsx',
@@ -23,7 +25,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'] // Add this rule for handling CSS files
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
       },
       {
         test: /\.(png|jpg|webp|gif|svg|mp4)$/,
@@ -51,6 +53,16 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
   },
-  mode: 'production', // or 'development' if you want a non-minified build
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+    }),
+    // new CopyWebpackPlugin({
+    //   patterns: [
+    //     { from: 'src/styles', to: 'dist/styles' } // Copy additional styles if needed
+    //   ],
+    // })
+  ],
+  mode: 'production', // or 'development' if needed
   target: 'node'
 };

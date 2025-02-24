@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { redirect, useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { applyAfterRender, configure, markdownToOutput } from 'shahneshan';
 // import ReactMarkdown from 'react-markdown';
 
 const MarkdownLoader = ({ template: Template }) => {
     const [content, setContent] = useState('');
     const [sidebar, setSidebar] = useState('');
-    const { path } = useParams();
+    const location = useLocation();
     const outputRef = useRef(null);
     
     // Construct the Markdown file path
-    const filePath = path ? `/docs/${path}.md` : '/docs/README.md';
+    const filePath = location.pathname ? `/docs/${location.pathname}.md` : '/docs/README.md';
     
 
     useEffect(() => {
@@ -42,7 +42,7 @@ const MarkdownLoader = ({ template: Template }) => {
             .then((markdown)=>{               
                 if(markdown) setSidebar(markdown);
             })
-            .catch((err) =>{console.log("aaaaaaaa");});
+            .catch((err) =>{console.log("???????");});
     }, []);
 
 

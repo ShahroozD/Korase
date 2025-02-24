@@ -16,24 +16,6 @@ const layout = (title, child) => (`
   </head>
   <body>
     <div id="root">${child}</div>
-
-    <script >
-        // تنظیم تجزیه‌گر با تنظیمات و افزونه‌های سفارشی
-        markdownParser.configure({
-            customStyles: "",
-            plugins: [
-                {
-                name: "moreEmoji",
-                beforeParse: (text) => text.replace(/:khande:/g, "😊")
-                }
-            ]
-        });
-
-        const markdown = "# سلام دنیا! :khande:";
-        const output = markdownParser.markdownToOutput(markdown);
-        console.log(output);
-    </script>
-
   </body>
 </html>
 `)

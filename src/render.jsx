@@ -8,7 +8,6 @@ import ReactDOMServer from "react-dom/server";
 import parse from "html-react-parser";
 import layout from './utils/render/layout';
 import BlogTemplate from '../templates/BlogTemplate/index';
-import sidebar from './../docs/_sidebar.md';
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Define __dirname manually (for ES modules)
@@ -33,34 +32,79 @@ async function loadMarkdown(filePath) {
     }
 }
 
+const loadSideBar = async (filePath) => {
+    try {
+        // Read the markdown file asynchronously
+        const markdown = await fsPromises.readFile(filePath, 'utf8');
+        return markdown;
+    } catch (err) {
+        console.error('Error reading file:', err);
+        return [];
+    }
+}
+
+const copyStyles = async () => {
+    const srcCssPath = path.join(__dirname, '../dist/styles.css');
+    const destCssPath = path.join(publicDir, 'styles.css');
+
+    try {
+        await fsPromises.copyFile(srcCssPath, destCssPath);
+        console.log('✅ styles.css copied to public folder');
+    } catch (err) {
+        console.error('❌ Error copying styles.css:', err);
+    }
+};
+
 // Function to recursively get all .md file paths
-const getAllMarkdownFiles = (dir) => {
+const getAllMarkdownFiles = async (dir) => {
     let files = [];
-    
-    fs.readdirSync(dir, { withFileTypes: true }).forEach((file) => {
-        const fullPath = path.join(dir, file.name);
+    let sides = {};
 
-        if (file.isDirectory()) {
-            files = files.concat(getAllMarkdownFiles(fullPath)); // Recursive call for subdirectories
-        } else if (file.name.endsWith('.md') && !file.name.startsWith("_")) {
-            files.push(fullPath); // Add markdown file path
+    try {
+        const items = await fsPromises.readdir(dir, { withFileTypes: true });
+
+        for (const file of items) {
+            const fullPath = path.join(dir, file.name);
+
+            if (file.isDirectory()) {
+                const { files: subFiles, sides: subSides } = await getAllMarkdownFiles(fullPath);
+                files = files.concat(subFiles); // Merge normal files
+
+                // Merge sides into the object
+                Object.entries(subSides).forEach(([key, value]) => {
+                    if (!sides[key]) sides[key] = [];
+                    sides[key] = sides[key].concat(value);
+                });
+            } else if (file.name.endsWith(".md") && !file.name.startsWith("_")) {
+                files.push(fullPath); // Add normal markdown file path
+            } else if (file.name.endsWith(".md") && file.name.startsWith("_")) {
+                let dirPath = path.dirname(fullPath).split(docsDir)[1]; // Get directory of the file
+                if (!dirPath) dirPath = "/"; // If in root
+
+                sides[dirPath] = await loadSideBar(fullPath); // Use `await` properly
+            }
         }
-    });
+    } catch (err) {
+        console.error("Error reading directory:", err);
+    }
 
-    return files;
+    return { files, sides };
 };
 
 // Read files one by one (sequentially)
 const processMarkdownFiles = async () => {
-    const markdownFiles = await getAllMarkdownFiles(docsDir);
+    const markdowns = await getAllMarkdownFiles(docsDir);
 
-    for (const filePath of markdownFiles) {
+    for (const filePath of markdowns.files) {
         
         const htmlString = await loadMarkdown(filePath);
-        const html = ReactDOMServer.renderToStaticMarkup(<BlogTemplate sidebar={sidebar}>{parse(htmlString)}</BlogTemplate>);
-        const fullHtml = layout('kashkul', html) ;
+        const currentPath = filePath.split(docsDir)[1];
+        const isRoot = (currentPath == "/README.md");
 
-        const fileName =  (filePath.split(docsDir)[1] == "/README.md")?'/index.html':filePath.split(docsDir)[1].replace(/\.md$/, '/index.html');
+        const html = ReactDOMServer.renderToStaticMarkup(<BlogTemplate sidebar={markdowns.sides[path.dirname(currentPath)]} path={(isRoot)?"/":"*"}>{parse(htmlString)}</BlogTemplate>);
+        const fullHtml = layout('korase', html) ;
+
+        const fileName =  (isRoot)?'/index.html':currentPath.replace(/\.md$/, '/index.html');
 
         const renderpath = path.join(publicDir, fileName);
         console.log(`render to: public${fileName}`);
@@ -73,6 +117,9 @@ const processMarkdownFiles = async () => {
     }
 
     console.log("✅ HTML saved");
+
+    // Copy CSS after HTML is processed
+    await copyStyles();
 };
 
 // Call the async function
