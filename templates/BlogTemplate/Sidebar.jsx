@@ -15,7 +15,7 @@ function parseLinksToObjects(text) {
     return result;
 }
 
-const Sidebar = ({ sidebar = "" }) => {
+const Sidebar = ({ sidebar = "", path = null }) => {
     const docsList = useMemo(() => parseLinksToObjects(sidebar), [sidebar]);
     let location = null; // Get the current path
     let isActive = false;
@@ -29,6 +29,8 @@ const Sidebar = ({ sidebar = "" }) => {
                 <ul>
                     {docsList.map((doc, index) => {
                         if(!isNode) isActive = location.pathname === `/${doc.path}`;
+                        else if(path) isActive = path === `/${doc.path}.md`;
+                        
                         return (
                         <li key={index}>
                             {isNode ? (
