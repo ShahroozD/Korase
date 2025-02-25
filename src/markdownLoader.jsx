@@ -1,16 +1,39 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { applyAfterRender, configure, markdownToOutput } from 'shahneshan';
+import { cleanMarkdown } from './utils/cleanup';
+
 // import ReactMarkdown from 'react-markdown';
 
 const MarkdownLoader = ({ template: Template }) => {
     const [content, setContent] = useState('');
     const [sidebar, setSidebar] = useState('');
+    const [navbar, setNavbar] = useState('');
     const location = useLocation();
     const outputRef = useRef(null);
     
+    // Extracting the path before the last "/"
+    const path = location.pathname;
+    const pathBeforeLast = path.substring(0, path.lastIndexOf("/"));
+
     // Construct the Markdown file path
-    const filePath = (location.pathname && location.pathname != "/") ? `/docs/${location.pathname}.md` : '/docs/README.md';
+    const filePath =
+    location.pathname && location.pathname !== "/"
+      ? `/docs/${location.pathname.endsWith(".md") ? location.pathname : location.pathname + ".md"}`
+      : "/docs/README.md";
+
+
+    // Define the sidebar file path dynamically
+    const sidebarFilePath =
+    location.pathname && location.pathname !== "/"
+        ? `/docs${pathBeforeLast}/_sidebar.md`
+        : "/docs/_sidebar.md";
+
+    // Define the sidebar file path dynamically
+    const navbarFilePath =
+    location.pathname && location.pathname !== "/"
+        ? `/docs${pathBeforeLast}/_navbar.md`
+        : "/docs/_navbar.md";
     
 
     useEffect(() => {
@@ -40,11 +63,30 @@ const MarkdownLoader = ({ template: Template }) => {
                 return response.text();
             })
             .then((markdown)=>{               
-                if(markdown) setSidebar(markdown);
+                if (markdown && !(markdown.startsWith("<!DOCTYPE html>") || markdown.includes("<html"))){
+                    const cleanedContent = cleanMarkdown(markdown);
+                    setSidebar(cleanedContent);
+                }
             })
             .catch((err) =>{console.log("???????");});
-    }, []);
+    }, [sidebarFilePath]);
 
+    useEffect(() => {
+        // Load the Markdown file content dynamically
+        fetch(navbarFilePath)
+            .then((response) => {
+                return response.text();
+            })
+            .then((markdown) => {
+                if (markdown && !(markdown.startsWith("<!DOCTYPE html>") || markdown.includes("<html"))){
+                    const cleanedContent = cleanMarkdown(markdown);
+                    setNavbar(cleanedContent);
+                }
+            })
+            .catch((err) => {
+                console.log("Error loading sidebar:", err);
+            });
+    }, [navbarFilePath]);
 
     // After content is updated, run the afterRender hook
     useEffect(() => {
@@ -54,7 +96,7 @@ const MarkdownLoader = ({ template: Template }) => {
     }, [content]);
 
     return (
-        <Template sidebar={sidebar}>
+        <Template sidebar={sidebar} navbar={navbar}>
             <div ref={outputRef} dangerouslySetInnerHTML={{__html: content}} />
         </Template>
     );

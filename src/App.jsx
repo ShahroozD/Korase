@@ -5,7 +5,6 @@ import MarkdownLoader from './markdownLoader';
 // Importing templates
 import BlogTemplate from '../templates/BlogTemplate';
 import DefaultTemplate from '../templates/DefaultTemplate';
-import useAutoDirection from './utils/useAutoDirection';
 
 
 
@@ -14,7 +13,7 @@ const TEMPLATE_TYPE = 'blog'; // Change this to 'default', 'blog'
 // Select the appropriate template based on configuration
 const getTemplate = (type) => {
     switch (type) {
-        case 'default':
+        case 'kashkul':
             return DefaultTemplate;
         case 'blog':
             return BlogTemplate;
@@ -25,8 +24,6 @@ const getTemplate = (type) => {
 
 
 const App = () => {
-
-    useAutoDirection();
 
     const SelectedTemplate = getTemplate(TEMPLATE_TYPE);
 

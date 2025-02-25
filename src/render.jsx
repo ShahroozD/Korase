@@ -7,7 +7,8 @@ import { fileURLToPath } from "url";
 import ReactDOMServer from "react-dom/server";
 import parse from "html-react-parser";
 import layout from './utils/render/layout';
-import BlogTemplate from '../templates/BlogTemplate/index';
+import BlogTemplate from '../templates/KashkulTemplate/index';
+import { cleanMarkdown } from './utils/cleanup';
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Define __dirname manually (for ES modules)
@@ -32,11 +33,11 @@ async function loadMarkdown(filePath) {
     }
 }
 
-const loadSideBar = async (filePath) => {
+const loadDataBar = async (filePath) => {
     try {
         // Read the markdown file asynchronously
         const markdown = await fsPromises.readFile(filePath, 'utf8');
-        return markdown;
+        return cleanMarkdown(markdown);
     } catch (err) {
         console.error('Error reading file:', err);
         return [];
@@ -59,6 +60,7 @@ const copyStyles = async () => {
 const getAllMarkdownFiles = async (dir) => {
     let files = [];
     let sides = {};
+    let navs = {};
 
     try {
         const items = await fsPromises.readdir(dir, { withFileTypes: true });
@@ -80,15 +82,16 @@ const getAllMarkdownFiles = async (dir) => {
             } else if (file.name.endsWith(".md") && file.name.startsWith("_")) {
                 let dirPath = path.dirname(fullPath).split(docsDir)[1]; // Get directory of the file
                 if (!dirPath) dirPath = "/"; // If in root
-
-                sides[dirPath] = await loadSideBar(fullPath); // Use `await` properly
+                if(file.name.includes("sidebar")) sides[dirPath] = await loadDataBar(fullPath); 
+                if(file.name.includes("navbar")) navs[dirPath] = await loadDataBar(fullPath);
+                
             }
         }
     } catch (err) {
         console.error("Error reading directory:", err);
     }
 
-    return { files, sides };
+    return { files, sides, navs };
 };
 
 // Read files one by one (sequentially)
@@ -101,7 +104,14 @@ const processMarkdownFiles = async () => {
         const currentPath = filePath.split(docsDir)[1];
         const isRoot = (currentPath == "/README.md");
 
-        const html = ReactDOMServer.renderToStaticMarkup(<BlogTemplate sidebar={markdowns.sides[path.dirname(currentPath)]} path={(isRoot)?"/":"*"}>{parse(htmlString)}</BlogTemplate>);
+        const html = ReactDOMServer.renderToStaticMarkup(
+            <BlogTemplate 
+                sidebar={markdowns.sides[path.dirname(currentPath)]} 
+                navbar={markdowns.navs[path.dirname(currentPath)]} 
+                path={(isRoot)?"/":currentPath}
+            >
+                {parse(htmlString)}
+            </BlogTemplate>);
         const fullHtml = layout('korase', html) ;
 
         const fileName =  (isRoot)?'/index.html':currentPath.replace(/\.md$/, '/index.html');
