@@ -16,6 +16,7 @@ const layout = (title, child) => (`
   </head>
   <body>
     <div id="root">${child}</div>
+    <script src="/scripts/script.js"></script>
   </body>
 </html>
 `)

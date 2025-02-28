@@ -8,8 +8,7 @@ import ReactDOMServer from "react-dom/server";
 import parse from "html-react-parser";
 import layout from './utils/render/layout';
 import BlogTemplate from '../templates/KashkulTemplate/index';
-import { cleanMarkdown } from './utils/cleanup';
-
+import { cleanMarkdown, findMenusData } from './utils/menuUtils';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Define __dirname manually (for ES modules)
 const docsDir = path.join(__dirname, '../docs'); // Path to docs folder
@@ -103,16 +102,23 @@ const processMarkdownFiles = async () => {
         const htmlString = await loadMarkdown(filePath);
         const currentPath = filePath.split(docsDir)[1];
         const isRoot = (currentPath == "/README.md");
-
+        
+        const sideBarData = await findMenusData(path.dirname(currentPath), markdowns.sides);
+        const navBarData = await findMenusData(path.dirname(currentPath), markdowns.navs);
+        
         const html = ReactDOMServer.renderToStaticMarkup(
             <BlogTemplate 
-                sidebar={markdowns.sides[path.dirname(currentPath)]} 
-                navbar={markdowns.navs[path.dirname(currentPath)]} 
+                sidebar={sideBarData} 
+                navbar={navBarData} 
                 path={(isRoot)?"/":currentPath}
             >
                 {parse(htmlString)}
             </BlogTemplate>);
-        const fullHtml = layout('korase', html) ;
+
+        // set all docs image source to public pics folder
+        const cleanHtml = html.replace(/src="([^"]*\/pics\/)([^\/"]+\/)*([^\/"]+)"/g, 'src="/pics/$3"');
+
+        const fullHtml = layout('korase', cleanHtml) ;
 
         const fileName =  (isRoot)?'/index.html':currentPath.replace(/\.md$/, '/index.html');
 

@@ -29,20 +29,11 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|webp|gif|svg|mp4)$/,
-        use: [{
-                loader: 'file-loader',
-                options: {
-                    name: '[path][name].[ext]?[hash]',
-                    context: 'myApp',
-                    publicPath: '/myApp',
-                    useRelativePath: true,
-                    emitFile: false
-                }
-            },
-            {
-                loader: 'webp-loader'
-            }
-        ]
+        type: 'asset/resource',
+        generator: {
+          filename: 'pics/[name][ext]?[hash]', // Ensures images are placed in `dist/pics`
+          publicPath: '/', // Ensures image URLs are `/public/pics/...`
+        }
       },
       {
         test: /\.md$/,
@@ -57,11 +48,25 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'styles.css',
     }),
-    // new CopyWebpackPlugin({
-    //   patterns: [
-    //     { from: 'src/styles', to: 'dist/styles' } // Copy additional styles if needed
-    //   ],
-    // })
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, '**/*.{jpg,png,webp}'), // Only match these file types
+          to: path.resolve(__dirname, 'public/pics/[name][ext]'), // Destination folder
+          context: path.resolve(__dirname, 'templates'), // Ensures relative paths are preserved
+          globOptions: {
+            ignore: ['**/exclude-folder/**'], // (Optional) Exclude specific folders if needed
+          },
+          noErrorOnMissing: true, // Avoid errors if no matching files exist
+        },
+        {
+          from: path.resolve(__dirname, 'templates/**/*.js'), // Copy JS files
+          to: path.resolve(__dirname, 'public/scripts/[name][ext]'), // Flatten JS into `public/script`
+          context: path.resolve(__dirname, 'templates'),
+          noErrorOnMissing: true,
+        }
+      ]
+    })
   ],
   mode: 'production', // or 'development' if needed
   target: 'node'
