@@ -18,7 +18,7 @@
     "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",
     "react-router-dom": "^6.28.0",
-    "shahneshan": "^1.0.5"
+    "shahneshan": "^1.0.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
