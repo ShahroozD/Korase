@@ -3,14 +3,19 @@ import path from "path";
 import fs from "fs";
 import fsPromises from "fs/promises";
 import React from "react";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 import ReactDOMServer from "react-dom/server";
 import parse from "html-react-parser";
 import layout from './utils/render/layout';
-import BlogTemplate from '../templates/KashkulTemplate/index';
 import { cleanMarkdown, findMenusData } from './utils/menuUtils';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Define __dirname manually (for ES modules)
+
+const templateName = import.meta.env.VITE_TEMPLATE_NAME || "BlogTemplate";
+
+const templatePath = pathToFileURL(path.resolve(__dirname, `../dist/templates/${templateName}/index.mjs`)).href;
+const BlogTemplate = (await eval('import(templatePath)')).default;
+
 const docsDir = path.join(__dirname, '../docs'); // Path to docs folder
 const publicDir = path.join(__dirname, '../public'); // Path to public folder
 
@@ -44,7 +49,7 @@ const loadDataBar = async (filePath) => {
 }
 
 const copyStyles = async () => {
-    const srcCssPath = path.join(__dirname, '../dist/styles.css');
+    const srcCssPath = path.join(__dirname, `../dist/templates/${templateName}/styles.css`);
     const destCssPath = path.join(publicDir, 'styles.css');
 
     try {

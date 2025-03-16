@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { applyAfterRender, configure, markdownToOutput } from 'shahneshan';
 import { fetchMenus } from './utils/menuUtils';
 
-const MarkdownLoader = ({ template: Template }) => {
+const MarkdownLoader = ({ template: Template, plugins }) => {
     const [content, setContent] = useState('');
     const [sidebar, setSidebar] = useState('');
     const [navbar, setNavbar] = useState('');
@@ -19,28 +19,8 @@ const MarkdownLoader = ({ template: Template }) => {
     location.pathname && location.pathname !== "/"
       ? `/docs/${location.pathname.endsWith(".md") ? location.pathname : location.pathname + ".md"}`
       : "/docs/README.md";
-    
-    useEffect(() => {
-        // Load the Markdown file content dynamically
-        fetch(filePath)
-            .then((response) => {               
-                if (!response.ok) throw new Error('File not found');
-                return response.text();
-            })
-            .then((markdown)=>{               
 
-                configure({
-                    customStyles: ``,
-                    plugins: [] // Register plugins here
-                });
-                
-                const htmlContent = markdownToOutput(markdown);
-                setContent(htmlContent);
-            })
-            .catch((err) => setContent(`# Error: Could not load ${filePath}\n\n${err.message}`));
-    }, [filePath]);
-
-    useEffect(() => {
+    useLayoutEffect(() => {
         const loadSidebar = async () => {
             const markdown = await fetchMenus(`/docs${pathBeforeLast}`, "sidebar");
             if (markdown) {
@@ -57,6 +37,26 @@ const MarkdownLoader = ({ template: Template }) => {
         loadSidebar();
         loadNavbar();
     }, [pathBeforeLast]);
+    
+    useEffect(() => {
+        // Load the Markdown file content dynamically
+        fetch(filePath)
+            .then((response) => {               
+                if (!response.ok) throw new Error('File not found');
+                return response.text();
+            })
+            .then((markdown)=>{               
+
+                configure({
+                    customStyles: ``,
+                    plugins: plugins // Register plugins here
+                });
+                
+                const htmlContent = markdownToOutput(markdown);
+                setContent(htmlContent);
+            })
+            .catch((err) => setContent(`# Error: Could not load ${filePath}\n\n${err.message}`));
+    }, [plugins, filePath]);
 
     // After content is updated, run the afterRender hook
     useEffect(() => {
