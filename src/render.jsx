@@ -11,7 +11,7 @@ import { cleanMarkdown, findMenusData } from './utils/menuUtils';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Define __dirname manually (for ES modules)
 
-const TEMPLATE_NAME = import.meta.env.VITE_TEMPLATE_NAME || "BlogTemplate";
+const TEMPLATE_NAME = process.env.VITE_TEMPLATE_NAME || "BlogTemplate";
 
 const templatePath = pathToFileURL(path.resolve(__dirname, `../dist/templates/${TEMPLATE_NAME}/index.mjs`)).href;
 const BlogTemplate = (await eval('import(templatePath)')).default;
