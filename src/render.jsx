@@ -11,9 +11,9 @@ import { cleanMarkdown, findMenusData } from './utils/menuUtils';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Define __dirname manually (for ES modules)
 
-const templateName = import.meta.env.VITE_TEMPLATE_NAME || "BlogTemplate";
+const TEMPLATE_NAME = import.meta.env.VITE_TEMPLATE_NAME || "BlogTemplate";
 
-const templatePath = pathToFileURL(path.resolve(__dirname, `../dist/templates/${templateName}/index.mjs`)).href;
+const templatePath = pathToFileURL(path.resolve(__dirname, `../dist/templates/${TEMPLATE_NAME}/index.mjs`)).href;
 const BlogTemplate = (await eval('import(templatePath)')).default;
 
 const docsDir = path.join(__dirname, '../docs'); // Path to docs folder
@@ -49,7 +49,7 @@ const loadDataBar = async (filePath) => {
 }
 
 const copyStyles = async () => {
-    const srcCssPath = path.join(__dirname, `../dist/templates/${templateName}/styles.css`);
+    const srcCssPath = path.join(__dirname, `../dist/templates/${TEMPLATE_NAME}/styles.css`);
     const destCssPath = path.join(publicDir, 'styles.css');
 
     try {
