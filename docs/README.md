@@ -42,8 +42,8 @@ That is so funny! :joy:
 To install this project, clone the repository and run the setup script:
 
 ```bash
-git clone https://github.com/ShahroozD/shahneshan.git
-cd shahneshan
+git clone https://github.com/ShahroozD/ShahMark.git
+cd shahmark
 npm install
 ```
 
@@ -143,8 +143,8 @@ greet()
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for more information.
 ```
+This project is licensed under the MIT License. See the LICENSE file for more information.
 ```
 
 ---
@@ -179,11 +179,13 @@ This is ==highlighted text== in a sentence.
 
 ...شعر
 
-روزها اندیشه‌ام این است و همه شب گفته‌ام -- که چرا غافل از احوال دل خویشتنم
-    ز کجا آمده‌ام آمدنم بهر چه بود -- ز کجا میروم آخر ننمایی وطنم
+خرد رهنمای و خرد دلگشای -- خرد دست گیرد به هر دو سرای
 
-مانده‌ام سخت شگفت کز چه سبب ساخت مرا
-یا چه بود است مراد وی از این ساختنم
+ازو شادمانی وزویت غمیست  -- وزویت فزونی وزویت کمیس
+
+خرد چشم جانست چون بنگری
+تو بی‌چشم شادان جهان نسپری
+
 ...
 
 

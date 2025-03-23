@@ -1,24 +1,26 @@
 {
   "name": "korase",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.1.0",
   "type": "module",
   "main": "./dist/render.cjs",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
     "render": "webpack && node dist/render.cjs",
+    "build": "npm run render && vite build",
+    "postbuild": "node scripts/copy-scripts.cjs && npx cpx \"docs/**/*\" dist/docs/",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
     "html-react-parser": "^5.2.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",
     "react-router-dom": "^6.28.0",
-    "shahneshan": "^1.0.8"
+    "shahneshan": "^1.0.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
@@ -27,12 +29,15 @@
     "@vitejs/plugin-react": "^4.3.3",
     "babel-loader": "^9.2.1",
     "copy-webpack-plugin": "^12.0.2",
+    "cpx": "^1.5.0",
     "css-loader": "^7.1.2",
+    "dotenv-webpack": "^8.1.0",
     "eslint": "^9.13.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "file-loader": "^6.2.0",
+    "fs": "^0.0.1-security",
     "globals": "^15.11.0",
     "mini-css-extract-plugin": "^2.9.2",
     "raw-loader": "^4.0.2",

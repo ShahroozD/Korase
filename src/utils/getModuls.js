@@ -1,16 +1,17 @@
+const templates = import.meta.glob('../templates/**/*.jsx'); // Adjust path as needed
+
 export const getTemplate = async () => {
-    const TEMPLATE_PATH = import.meta.env.VITE_TEMPLATE_PATH || "../../templates";
     const TEMPLATE_NAME = import.meta.env.VITE_TEMPLATE_NAME || "BlogTemplate";
-    try {
-        const module = await import(`${TEMPLATE_PATH}/${TEMPLATE_NAME}`);
-        console.log('Module loaded:', module);  // Check what you get
-        return module.default;  // Return the component if available
-    } catch (error) {
-        console.error('Error loading template:', error);
+    const TEMPLATE_PATH = `../templates/${TEMPLATE_NAME}/index.jsx`;
+
+    if (!templates[TEMPLATE_PATH]) {
+        console.error(`Template ${TEMPLATE_PATH} not found!`);
         return null;
     }
-};
 
+    const module = await templates[TEMPLATE_PATH]();
+    return module.default;
+};
 
 
 export const loadPlugins = async () => {

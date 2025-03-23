@@ -49,7 +49,7 @@ const loadDataBar = async (filePath) => {
 }
 
 const copyStyles = async () => {
-    const srcCssPath = path.join(__dirname, `../dist/templates/${TEMPLATE_NAME}/styles.css`);
+    const srcCssPath = path.join(__dirname, `../dist/templates/styles/styles.css`);
     const destCssPath = path.join(publicDir, 'styles.css');
 
     try {

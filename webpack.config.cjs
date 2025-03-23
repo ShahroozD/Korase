@@ -1,10 +1,11 @@
 const path = require('path');
 const glob = require('glob');
+const Dotenv = require('dotenv-webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const templateEntries = {};
-glob.sync('./templates/*/index.jsx').forEach(file => {
+glob.sync('./src/templates/*/index.jsx').forEach(file => {
     const name = path.basename(path.dirname(file)); // Get template folder name
     templateEntries[name] = file; // Use template name instead of "index"
 });
@@ -60,6 +61,7 @@ module.exports = [
       extensions: ['.js', '.jsx'],
     },
     plugins: [
+      new Dotenv(),
       new MiniCssExtractPlugin({
         filename: '[name]/styles.css',
       }),
@@ -135,6 +137,7 @@ module.exports = [
       extensions: ['.js', '.jsx'],
     },
     plugins: [
+      new Dotenv(),
       new MiniCssExtractPlugin({
         filename: 'styles.css',
       }),
@@ -215,6 +218,7 @@ module.exports = [
       extensions: ['.js', '.jsx']
     },
     plugins: [
+      new Dotenv(),
       new MiniCssExtractPlugin({
         filename: 'styles.css',
       }),
